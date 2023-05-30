@@ -13,6 +13,9 @@ class ScoreBoard(Turtle):
         super().__init__()
         self.penup()
         self.hideturtle()
+        with open(file="data.txt") as file:
+            self.high_score = int(file.read())
+        # self.high_score = 0
         self.food_eaten = 0
         self.color("white")
         self.goto(x=0, y=265)
@@ -23,18 +26,24 @@ class ScoreBoard(Turtle):
         add + 1 points to the score board.
         """
         self.food_eaten += 1
-        self.clear()
         self.update_scoreboard()
 
     def update_scoreboard(self):
         """
         Updates the score board after adding one food eaten unit.
         """
-        self.write(arg=f"SCORE: {self.food_eaten}", move=False, align=ALIGNMENT, font=FONT)
+        self.clear()
+        self.write(arg=f"SCORE: {self.food_eaten} HIGH SCORE: {self.high_score}", move=False, align=ALIGNMENT,
+                   font=FONT)
 
-    def game_over(self):
+    def reset_max(self):
         """
-        Shows a GAME OVER sign in the middle of the screen.
+        Resets the score board.
         """
-        self.goto(0, 0)
-        self.write(arg="GAME OVER", align=ALIGNMENT, font=FONT)
+        if self.food_eaten > self.high_score:
+            self.high_score = self.food_eaten
+            with open(file="data.txt", mode="w") as data:
+                data.write(f"{self.high_score}")
+
+        self.food_eaten = 0
+        self.update_scoreboard()
